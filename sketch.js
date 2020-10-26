@@ -1,3 +1,4 @@
+//Global variables
 let monkey, monkey_running, monkey_end;
 let banana, bananaImage, obstacle, obstacleImage;
 let foodGroup, obstacleGroup;
@@ -10,6 +11,7 @@ let gamestate = play;
 let foodGroupAssign = 1;
 let fg1, fg2, fg3;
 
+//Loading Images
 function preload() {
     monkey_running = loadAnimation("sprite_0.png", "sprite_1.png", "sprite_2.png", "sprite_3.png", "sprite_4.png", "sprite_5.png", "sprite_6.png", "sprite_7.png", "sprite_8.png");
     monkey_end = loadAnimation("sprite_5.png");
@@ -19,6 +21,7 @@ function preload() {
     gameOverImg = loadImage("gameover.png");
 }
 
+//Creating sprites and setting them on the canvas
 function setup() {
     createCanvas(800, 400);
     back = createSprite(400, 200);
@@ -40,18 +43,21 @@ function setup() {
     fg3 = createGroup();
 }
 
+//Drawing Elements
 function draw() {
     background("white");
 
+    //Calling functions
     playstate();
     endstate();
     drawSprites();
-
+    //Score
     fill("red");
     textSize(20);
     text("Score" + " " + ":" + score, 700, 45);
 }
 
+//Processes to be done in play state
 function playstate() {
     if (gamestate === play) {
         gameOver.visible = false;
@@ -64,6 +70,7 @@ function playstate() {
     }
 }
 
+//Processes to be done in end state
 function endstate() {
     if (gamestate === end) {
         gameOver.visible = true;
@@ -71,17 +78,22 @@ function endstate() {
     }
 }
 
+//Spawning banana according to the frame count
 function bananaSpawn() {
 
     if (frameCount % 150 === 0) {
+        //Defining proprties for banana
         banana = createSprite(820, 225);
         banana.addImage("bananaimage", bananaImage);
         banana.scale = 0.1;
         banana.velocityX = -(7 + (score / 4));
         banana.lifetime = 200;
+
+        //Adding banana to groups and adding collides
         foodGroup.add(banana);
-        banana.debug = true;
         foodGroup.setColliderEach("rectangle", 0, 0, 500, 200);
+
+        //Assigning banana separate groups to prevent computer to choose wrong sprite according to our game
         switch (foodGroupAssign) {
             case 1:
                 fg1.add(banana);
@@ -101,28 +113,36 @@ function bananaSpawn() {
 
 }
 
+//Spawning the obstacles according to the framecount
 function obstacleSpawn() {
 
     if (frameCount % 150 === 0) {
         obstacle = createSprite(820, 350);
+        //Properties of obstacles
         obstacle.addImage("obstacleimage", obstacleImage);
         obstacle.scale = 0.1;
         obstacle.velocityX = -(4 + (score / 2));
         obstacle.lifetime = 400;
+
+        //Addind obstacles to a group
         obstacleGroup.add(obstacle);
         obstacleGroup.setColliderEach("circle", 0, 0, 200);
+
+        //Making our monkey visible at the top
         obstacle.depth = monkey.depth;
         monkey.depth = monkey.depth + 1;
     }
 
 }
 
+//Calculating score according to the number of banana touched
 function scoreCalculator() {
     if (foodGroup.isTouching(monkey)) {
         score = score + 1;
     }
 }
 
+//Assigning gravity and controls to our monkey
 function monkeyMovement() {
     monkey.collide(invisible_ground);
 
@@ -133,12 +153,14 @@ function monkeyMovement() {
 
 }
 
+//Position where the game will finish
 function endgame() {
     if (obstacleGroup.isTouching(monkey)) {
         gamestate = end;
     }
 }
 
+//Processes to be done in game state end
 function gamestateend() {
     obstacleGroup.setVelocityXEach(0);
     foodGroup.setVelocityXEach(0);
@@ -148,12 +170,14 @@ function gamestateend() {
     monkey.velocityY = 0;
 }
 
+//Recomputing the value of the variable which is responsibble to assign diffrent groups to our banana
 function assignreset() {
     if (foodGroupAssign === 3) {
         foodGroupAssign = 1;
     }
 }
 
+//Destroying our banana as the monkey touches it
 function bananaeat() {
     if (monkey.isTouching(fg1)) {
         fg1.destroyEach();

@@ -30,7 +30,7 @@ function setup() {
     monkey.addAnimation("monkeyrunning", monkey_running);
     monkey.addAnimation("monkeyEnd", monkey_end);
     monkey.scale = 0.1;
-    monkey.debug = true;
+    monkey.debug = false;
     invisible_ground = createSprite(400, 370, 800, 10);
     gameOver = createSprite(400, 200);
     gameOver.addImage(gameOverImg);
